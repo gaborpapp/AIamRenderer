@@ -7,6 +7,7 @@
 #include "cinder/params/Params.h"
 
 #include "Config.h"
+#include "OscServer.h"
 #include "ParamsUtils.h"
 
 using namespace ci;
@@ -44,6 +45,14 @@ class AIamRendereApp : public AppNative
 	Quatf mCameraOrientation;
 
 	mndl::ConfigRef mConfig;
+
+	void setupOsc();
+
+	mndl::osc::Server mListener;
+	std::mutex mOscMutex;
+
+	bool orientationReceived( const mndl::osc::Message &message );
+	bool translationReceived( const mndl::osc::Message &message );
 };
 
 void AIamRendereApp::prepareSettings( Settings *settings )
@@ -58,6 +67,7 @@ void AIamRendereApp::setup()
 	disableFrameRate();
 
 	setupParams();
+	setupOsc();
 
 	mndl::params::addParamsLayoutVars( mConfig );
 
@@ -116,6 +126,13 @@ void AIamRendereApp::setupParams()
 	mParams->addSeparator();
 }
 
+void AIamRendereApp::setupOsc()
+{
+	mListener = mndl::osc::Server( 10000 );
+	mListener.registerOscReceived( &AIamRendereApp::translationReceived, this, "/translation", "iifff" );
+	mListener.registerOscReceived( &AIamRendereApp::orientationReceived, this, "/orientation", "iifff" );
+}
+
 void AIamRendereApp::update()
 {
 	mFps = getAverageFps();
@@ -133,6 +150,18 @@ void AIamRendereApp::draw()
 	gl::color( Color::white() );
 
 	mParams->draw();
+}
+
+bool AIamRendereApp::orientationReceived( const mndl::osc::Message &message )
+{
+	app::console() << message << std::endl;
+	return false;
+}
+
+bool AIamRendereApp::translationReceived( const mndl::osc::Message &message )
+{
+	app::console() << message << std::endl;
+	return false;
 }
 
 void AIamRendereApp::mouseDown( MouseEvent event )
