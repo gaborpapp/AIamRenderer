@@ -7,6 +7,7 @@ using namespace ci;
 Avatar::Avatar( const fs::path &modelPath )
 {
 	mAssimpLoader = mndl::assimp::AssimpLoader::create( modelPath );
+	mAssimpLoader->enableSkinning();
 
 	collectJoints();
 }
@@ -23,6 +24,16 @@ void Avatar::collectJoints()
 			app::console() << "Warning: joint not found for name " << jointName << std::endl;
 		}
 	}
+}
+
+void Avatar::update()
+{
+	mAssimpLoader->update();
+}
+
+void Avatar::draw()
+{
+	mAssimpLoader->draw();
 }
 
 std::string Avatar::sJointNames[ Joints::TOTAL_JOINTS ] =

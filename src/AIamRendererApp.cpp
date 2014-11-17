@@ -111,17 +111,17 @@ void AIamRendereApp::setupParams()
 	mParams->addParam( "Orientationt", &mCameraOrientation, true );
 
 	mConfig->addVar( "Camera/Fov", &mCameraFov, 45.0f );
-	mConfig->addVar( "Camera/EyePoint", &mCameraEyePoint, Vec3f( 0.0f, -55.0f, 0.0f ) );
-	mConfig->addVar( "Camera/CenterOfInterestPoint", &mCameraCenterOfInterestPoint, Vec3f( 0.0f, 0.0f, -3.0f ) );
-	mConfig->addVar( "Camera/Orientation", &mCameraOrientation, Quatf::identity() );
+	mConfig->addVar( "Camera/EyePoint", &mCameraEyePoint, Vec3f( 0.0f, 0.0f, 500.0f ) );
+	mConfig->addVar( "Camera/CenterOfInterestPoint", &mCameraCenterOfInterestPoint, Vec3f::zero() );
+	mConfig->addVar( "Camera/Orientation", &mCameraOrientation, Quatf( -1.0f, 0.0f, 0.0f, 0.0f ) );
 
 	mParams->addButton( "Reset camera",
 			[ & ]()
 			{
-				mCameraCenterOfInterestPoint = Vec3f( 0.0f, 0.0f, -3.0f );
+				mCameraCenterOfInterestPoint = Vec3f::zero();
 				mCameraFov = 45.f;
-				mCameraEyePoint = Vec3f( 0.0f, -55.0f, 0.0f );
-				mCameraOrientation = Quatf::identity();
+				mCameraEyePoint = Vec3f( 0.0f, 0.0f, 500.0f );
+				mCameraOrientation = Quatf( -1.0f, 0.0f, 0.0f, 0.0f );
 
 				mCamera.setPerspective( mCameraFov, getWindowAspectRatio(), 0.1f, 10000.0f );
 				mCamera.setEyePoint( mCameraEyePoint );
@@ -141,18 +141,20 @@ void AIamRendereApp::setupOsc()
 void AIamRendereApp::update()
 {
 	mFps = getAverageFps();
+
+	mAvatar->update();
 }
 
 void AIamRendereApp::draw()
 {
 	gl::setViewport( getWindowBounds() );
-	gl::setMatricesWindow( getWindowSize() );
+	gl::setMatrices( mCamera );
 	gl::clear();
 
 	gl::enableDepthRead();
 	gl::enableDepthWrite();
 
-	gl::color( Color::white() );
+	mAvatar->draw();
 
 	mParams->draw();
 }
