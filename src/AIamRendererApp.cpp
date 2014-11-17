@@ -221,6 +221,15 @@ void AIamRendererApp::draw()
 bool AIamRendererApp::orientationReceived( const mndl::osc::Message &message )
 {
 	//app::console() << message << std::endl;
+	int frameId = message.getArg< int >( 0 );
+	int jointId = message.getArg< int >( 1 );
+
+	Vec3f eulerAngles;
+	eulerAngles.x = message.getArg< float >( 2 );
+	eulerAngles.y = message.getArg< float >( 3 );
+	eulerAngles.z = message.getArg< float >( 4 );
+
+	mAvatar->setOrientation( frameId, jointId, eulerAngles );
 	return false;
 }
 

@@ -50,6 +50,27 @@ void Avatar::setPosition( size_t frameId, size_t jointId, const Vec3f &position 
 	}
 }
 
+void Avatar::setOrientation( size_t frameId, size_t jointId, const ci::Vec3f &eulerDegrees )
+{
+	if ( jointId >= Joints::TOTAL_JOINTS )
+	{
+		return;
+	}
+	auto node = mJoints[ jointId ];
+	if ( ! node )
+	{
+		return;
+	}
+
+	// BVH rotation order is ZXY
+	Matrix33f rotation = Matrix33f::createRotation( Vec3f::zAxis(), toRadians( eulerDegrees.z ) );
+	rotation.rotate( Vec3f::xAxis(), toRadians( eulerDegrees.x ) );
+	rotation.rotate( Vec3f::yAxis(), toRadians( eulerDegrees.y ) );
+
+	Quatf quat( rotation );
+	node->setOrientation( quat );
+}
+
 std::string Avatar::sJointNames[ Joints::TOTAL_JOINTS ] =
 {
 	"Hip", "LowerSpine", "MiddleSpine", "Chest", "Neck", "Head", "HeadEnd",
