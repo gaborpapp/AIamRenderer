@@ -71,6 +71,9 @@ class AIamRendererApp : public AppNative
 	bool orientationReceived( const mndl::osc::Message &message );
 	bool translationReceived( const mndl::osc::Message &message );
 
+	uint32_t orientationHandlerId;
+	uint32_t translationHandlerId;
+
 	AvatarRef mAvatar;
 };
 
@@ -167,8 +170,10 @@ void AIamRendererApp::setupParams()
 void AIamRendererApp::setupOsc()
 {
 	mListener = mndl::osc::Server( 10000 );
-	mListener.registerOscReceived( &AIamRendererApp::translationReceived, this, "/translation", "iifff" );
-	mListener.registerOscReceived( &AIamRendererApp::orientationReceived, this, "/orientation", "iifff" );
+	translationHandlerId = mListener.registerOscReceived(
+			&AIamRendererApp::translationReceived, this, "/translation", "iifff" );
+	orientationHandlerId = mListener.registerOscReceived(
+			&AIamRendererApp::orientationReceived, this, "/orientation", "iifff" );
 }
 
 void AIamRendererApp::update()
@@ -427,6 +432,9 @@ void AIamRendererApp::keyDown( KeyEvent event )
 
 void AIamRendererApp::shutdown()
 {
+	mListener.unregisterOscReceived( translationHandlerId );
+	mListener.unregisterOscReceived( orientationHandlerId );
+
 	fs::path configPath = app::getAssetPath( "" ) / "config.xml";
 	mndl::params::writeParamsLayout();
 	mConfig->write( writeFile( configPath ) );
