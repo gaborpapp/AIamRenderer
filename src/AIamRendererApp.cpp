@@ -18,7 +18,7 @@
 using namespace ci;
 using namespace ci::app;
 
-class AIamRendereApp : public AppNative
+class AIamRendererApp : public AppNative
 {
  public:
 	void prepareSettings( Settings *settings );
@@ -74,12 +74,12 @@ class AIamRendereApp : public AppNative
 	AvatarRef mAvatar;
 };
 
-void AIamRendereApp::prepareSettings( Settings *settings )
+void AIamRendererApp::prepareSettings( Settings *settings )
 {
 	settings->setWindowSize( 1152, 648 );
 }
 
-void AIamRendereApp::setup()
+void AIamRendererApp::setup()
 {
 	mConfig = mndl::Config::create();
 
@@ -110,7 +110,7 @@ void AIamRendereApp::setup()
 	mCamera.setOrientation( mCameraOrientation );
 }
 
-void AIamRendereApp::setupParams()
+void AIamRendererApp::setupParams()
 {
 	mParams = params::InterfaceGl::create( "Parameters", Vec2i( 250, 400 ) );
 	mParams->addParam( "Fps", &mFps, true );
@@ -155,7 +155,7 @@ void AIamRendereApp::setupParams()
 	mParams->addParam( "Draw plane", &mDrawPlane );
 	mParams->addParam( "Draw grid", &mDrawGrid );
 	mParams->addParam( "Grid size", &mGridSize ).min( 1 ).max( 512 ).updateFn(
-			std::bind( &AIamRendereApp::createGrid, this ) );
+			std::bind( &AIamRendererApp::createGrid, this ) );
 
 	mConfig->addVar( "Debug/DrawPlane", &mDrawPlane, true );
 	mConfig->addVar( "Debug/DrawGrid", &mDrawGrid, true );
@@ -164,21 +164,21 @@ void AIamRendereApp::setupParams()
 	mParams->addSeparator();
 }
 
-void AIamRendereApp::setupOsc()
+void AIamRendererApp::setupOsc()
 {
 	mListener = mndl::osc::Server( 10000 );
-	mListener.registerOscReceived( &AIamRendereApp::translationReceived, this, "/translation", "iifff" );
-	mListener.registerOscReceived( &AIamRendereApp::orientationReceived, this, "/orientation", "iifff" );
+	mListener.registerOscReceived( &AIamRendererApp::translationReceived, this, "/translation", "iifff" );
+	mListener.registerOscReceived( &AIamRendererApp::orientationReceived, this, "/orientation", "iifff" );
 }
 
-void AIamRendereApp::update()
+void AIamRendererApp::update()
 {
 	mFps = getAverageFps();
 
 	mAvatar->update();
 }
 
-void AIamRendereApp::draw()
+void AIamRendererApp::draw()
 {
 	gl::setViewport( getWindowBounds() );
 	gl::setMatrices( mCamera );
@@ -218,13 +218,13 @@ void AIamRendereApp::draw()
 	mParams->draw();
 }
 
-bool AIamRendereApp::orientationReceived( const mndl::osc::Message &message )
+bool AIamRendererApp::orientationReceived( const mndl::osc::Message &message )
 {
 	//app::console() << message << std::endl;
 	return false;
 }
 
-bool AIamRendereApp::translationReceived( const mndl::osc::Message &message )
+bool AIamRendererApp::translationReceived( const mndl::osc::Message &message )
 {
 	//app::console() << message << std::endl;
 	int frameId = message.getArg< int >( 0 );
@@ -242,7 +242,7 @@ bool AIamRendereApp::translationReceived( const mndl::osc::Message &message )
 
 // based on Cinder-MeshHelper by Ban the Rewind
 // https://github.com/BanTheRewind/Cinder-MeshHelper/
-TriMesh AIamRendereApp::createSquare( const Vec2i &resolution )
+TriMesh AIamRendererApp::createSquare( const Vec2i &resolution )
 {
 	std::vector< uint32_t > indices;
 	std::vector< Vec3f > normals;
@@ -313,7 +313,7 @@ TriMesh AIamRendereApp::createSquare( const Vec2i &resolution )
 	return mesh;
 }
 
-void AIamRendereApp::createGrid()
+void AIamRendererApp::createGrid()
 {
 	mGrid = gl::DisplayList( GL_COMPILE );
 	mGrid.newList();
@@ -339,7 +339,7 @@ void AIamRendereApp::createGrid()
 }
 
 
-void AIamRendereApp::mouseDown( MouseEvent event )
+void AIamRendererApp::mouseDown( MouseEvent event )
 {
 	mMayaCam.setCurrentCam( mCamera );
 	mMayaCam.mouseDown( event.getPos() );
@@ -350,7 +350,7 @@ void AIamRendereApp::mouseDown( MouseEvent event )
 	mCameraOrientation = mCamera.getOrientation();
 }
 
-void AIamRendereApp::mouseDrag( MouseEvent event )
+void AIamRendererApp::mouseDrag( MouseEvent event )
 {
 	mMayaCam.setCurrentCam( mCamera );
 	mMayaCam.mouseDrag( event.getPos(), event.isLeftDown(), event.isMiddleDown(), event.isRightDown() );
@@ -361,13 +361,13 @@ void AIamRendereApp::mouseDrag( MouseEvent event )
 	mCameraOrientation = mCamera.getOrientation();
 }
 
-void AIamRendereApp::resize()
+void AIamRendererApp::resize()
 {
 	mCamera.setAspectRatio( getWindowAspectRatio() );
 	mMayaCam.setCurrentCam( mCamera );
 }
 
-void AIamRendereApp::keyDown( KeyEvent event )
+void AIamRendererApp::keyDown( KeyEvent event )
 {
 	switch ( event.getCode() )
 	{
@@ -416,12 +416,12 @@ void AIamRendereApp::keyDown( KeyEvent event )
 	}
 }
 
-void AIamRendereApp::shutdown()
+void AIamRendererApp::shutdown()
 {
 	fs::path configPath = app::getAssetPath( "" ) / "config.xml";
 	mndl::params::writeParamsLayout();
 	mConfig->write( writeFile( configPath ) );
 }
 
-CINDER_APP_BASIC( AIamRendereApp, RendererGl )
+CINDER_APP_BASIC( AIamRendererApp, RendererGl )
 
