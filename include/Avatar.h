@@ -4,6 +4,7 @@
 #include <string>
 
 #include "cinder/Filesystem.h"
+#include "cinder/Vector.h"
 
 #include "AssimpLoader.h"
 
@@ -17,6 +18,8 @@ class Avatar
 
 	void update();
 	void draw();
+
+	void setPosition( size_t frameId, size_t jointId, const ci::Vec3f &position );
 
  protected:
 	Avatar( const ci::fs::path &modelPath );

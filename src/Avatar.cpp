@@ -36,6 +36,20 @@ void Avatar::draw()
 	mAssimpLoader->draw();
 }
 
+void Avatar::setPosition( size_t frameId, size_t jointId, const Vec3f &position )
+{
+	if ( jointId >= Joints::TOTAL_JOINTS )
+	{
+		return;
+	}
+
+	auto node = mJoints[ jointId ];
+	if ( node )
+	{
+		node->setPosition( position );
+	}
+}
+
 std::string Avatar::sJointNames[ Joints::TOTAL_JOINTS ] =
 {
 	"Hip", "LowerSpine", "MiddleSpine", "Chest", "Neck", "Head", "HeadEnd",
