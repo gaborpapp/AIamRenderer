@@ -49,6 +49,7 @@ class AIamRendererApp : public AppNative
 
 	static const int PLANE_SIZE = 1024;
 
+	bool mEnableWireframe;
 	bool mDrawPlane;
 	bool mDrawGrid;
 	int mGridSize;
@@ -155,11 +156,14 @@ void AIamRendererApp::setupParams()
 
 	mParams->addText( "Debug" );
 	mParams->addParam( "Draw origin", &mDebugDrawOrigin );
+	mParams->addParam( "Enable wirefame", &mEnableWireframe );
 	mParams->addParam( "Draw plane", &mDrawPlane );
 	mParams->addParam( "Draw grid", &mDrawGrid );
 	mParams->addParam( "Grid size", &mGridSize ).min( 1 ).max( 512 ).updateFn(
 			std::bind( &AIamRendererApp::createGrid, this ) );
 
+	mConfig->addVar( "Debug/EnableWireframe", &mEnableWireframe, false );
+	mConfig->addVar( "Debug/DrawPlane", &mDrawPlane, true );
 	mConfig->addVar( "Debug/DrawPlane", &mDrawPlane, true );
 	mConfig->addVar( "Debug/DrawGrid", &mDrawGrid, true );
 	mConfig->addVar( "Debug/GridSize", &mGridSize, 50 );
@@ -200,7 +204,15 @@ void AIamRendererApp::draw()
 	glPolygonOffset( 1.0f, 1.0f );
 	gl::enable( GL_POLYGON_OFFSET_FILL );
 
+	if ( mEnableWireframe )
+	{
+		gl::enableWireframe();
+	}
 	mAvatar->draw();
+	if ( mEnableWireframe )
+	{
+		gl::disableWireframe();
+	}
 
 	if ( mDrawPlane )
 	{
