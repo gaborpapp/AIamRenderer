@@ -1,0 +1,14 @@
+from config import CINDER_PATH
+
+env = Environment()
+
+env['APP_TARGET'] = 'AIamRendererApp'
+env['APP_SOURCES'] = ['AIamRendererApp.cpp',
+	'Config.cpp', 'ParamsUtils.cpp']
+env['ASSETS'] = ['model/avatar.dae']
+env['DEBUG'] = 0
+
+env = SConscript(CINDER_PATH + '/blocks/Cinder-Assimp/scons/SConscript', exports = 'env')
+env = SConscript(CINDER_PATH + '/blocks/Cinder-Osc/scons/SConscript', exports = 'env')
+
+SConscript(CINDER_PATH + '/scons/SConscript', exports = 'env')

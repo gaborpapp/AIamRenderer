@@ -1,0 +1,13 @@
+.DS_Store
+*.o
+*.app
+
+.sconsign.dblite
+config.py
+*.pyc
+
+*.sw[a-z]
+
+scons/AIamRendererApp
+
+assets/masks
