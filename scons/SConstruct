@@ -3,7 +3,7 @@ from config import CINDER_PATH
 env = Environment()
 
 env['APP_TARGET'] = 'AIamRendererApp'
-env['APP_SOURCES'] = ['AIamRendererApp.cpp',
+env['APP_SOURCES'] = ['AIamRendererApp.cpp', 'Avatar.cpp',
 	'Config.cpp', 'ParamsUtils.cpp']
 env['ASSETS'] = ['model/avatar.dae']
 env['DEBUG'] = 0

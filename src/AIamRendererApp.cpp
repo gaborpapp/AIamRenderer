@@ -6,6 +6,7 @@
 #include "cinder/gl/gl.h"
 #include "cinder/params/Params.h"
 
+#include "Avatar.h"
 #include "Config.h"
 #include "OscServer.h"
 #include "ParamsUtils.h"
@@ -53,6 +54,8 @@ class AIamRendereApp : public AppNative
 
 	bool orientationReceived( const mndl::osc::Message &message );
 	bool translationReceived( const mndl::osc::Message &message );
+
+	AvatarRef mAvatar;
 };
 
 void AIamRendereApp::prepareSettings( Settings *settings )
@@ -68,6 +71,8 @@ void AIamRendereApp::setup()
 
 	setupParams();
 	setupOsc();
+
+	mAvatar = Avatar::create( getAssetPath( "model/avatar.dae" ) );
 
 	mndl::params::addParamsLayoutVars( mConfig );
 
