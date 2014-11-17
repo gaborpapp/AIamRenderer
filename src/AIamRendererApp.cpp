@@ -87,7 +87,7 @@ void AIamRendereApp::setup()
 
 	setupParams();
 
-	mAvatar = Avatar::create( getAssetPath( "model/avatar.dae" ) );
+	mAvatar = Avatar::create( getAssetPath( "model/avatar_90.dae" ) );
 
 	setupOsc();
 
